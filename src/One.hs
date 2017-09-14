@@ -1,96 +1,95 @@
-module One where
+module DotSintax
+(
 
-import qualified Data.Char         as  Dt
-import qualified Data.Graph		   as  Gr
-import qualified Control.Monad     as  Cm
+dotSintax
+,visualise
+,visualiseCluster
+,dotDirect
+,dotNodes
+,dotEdges
+,main
+
+)where
+
+import qualified Data.Graph as Gr
+import  Data.Char
+import Control.Monad
+import System.IO
+
 
 
 data Graph t a = Empty
                | Vertex a
-               | Overlay String (Graph t a) (Graph t a)
+               | Overlay (Graph t a) (Graph t a)
                | Connect String String (Graph t a) (Graph t a)
                | Subgraph String (Graph t a)
                deriving (Show, Read, Eq)
+               
+-- Approach to see Graph data in dot Sintax              
+               
+dotSintax :: String -> String -> Graph String Int -> String
+dotSintax x1 x2 (Empty)     = if x1 == "direct" 
+							then "Diagraph " ++ x2 ++ " { \n } " 
+							else  "graph " ++ x2 ++ " { \n } " 
+							
+dotSintax x1 x2 (Vertex x)  = if x1 == "direct" 
+							then "Diagraph " ++ x2 ++ " {" ++ show x ++ "\n } "
+							else  "graph " ++ x2 ++ " {" ++ show x ++ " \n } "  
+
+dotSintax x1 x2 (Overlay n1 n2 )  = if x1 == "direct" 
+							then "Diagraph " ++ x2 ++ " {" ++ visualise n1 ++ visualise n2 ++ "\n } "
+							else  "graph " ++ x2 ++ " {" ++ visualise n1 ++ visualise n2 ++ "\n } "
+							
+dotSintax x1 x2 (Connect x3 x4 n1 n2 )  = if x1 == "direct" 
+							then "Diagraph " ++ x2 ++ " {" ++ visualiseCluster x3 n1 ++ visualiseCluster x4 n2 ++ "\n } "
+							else  "graph " ++ x2 ++ " {" ++ visualiseCluster x3 n1 ++ visualiseCluster x4 n2 ++ "\n } "
+							
+dotSintax x1 x2 (Subgraph x3 n1 )  = if x1 == "direct" 
+							then "Diagraph " ++ x2 ++ " {" ++ visualiseCluster x3 n1 ++ "\n } "
+							else  "graph " ++ x2 ++ " {" ++ visualiseCluster x3 n1 ++  "\n } "						
 
 
-
--- Visualisation of Graph as strings 
-
-
+--Define Visualise 
 visualise :: Graph String Int -> String
-visualise Empty         		= "\n"
-visualise (Vertex i)    		= show i
-visualise (Overlay n1 x y) 		= n1 ++ "[(" ++ visualise x ++ ")" ++ "," ++  "(" ++ visualise y ++ ")]"
-visualise (Connect n1 n2 x y) 	= visualiseAsCluster n1 x ++ visualiseAsCluster n2 y ++ n1 ++ " -> " ++ n2 ++ "\n"
-visualise (Subgraph n x)  		= visualiseAsCluster n x
-visualiseAsCluster :: String -> Graph String Int -> String
-visualiseAsCluster n g = "cluster " ++ n ++ " {\n" ++ visualise g ++ "}\n"
-
-
--- element to display the graph as a list  
-type Vertex  = [Int]
-type Edge    = (Vertex, Vertex)
-type Graphs  = [Edge] 
-
-
-
-connect :: a -> a -> (a, a)
-connect x1 x2 = (x1,x2)
-
-overlay :: a -> a -> Maybe ([a],[a])
-overlay x1 x2 = Just ([x1],[x2])
-
-showEdges :: (Ord a) => [a] -> [a]  
-showEdges [] = []  
-showEdges (x:xs) =  (x:xs)
-
-showVertices :: (Ord a) => [a] -> [a]  
-showVertices [] = []  
-showVertices (x:xs) =   
-    let smaller = showVertices [a | a <- xs, a < x]  
-        bigger = showVertices [a | a <- xs, a > x]  
-    in  smaller ++ [x] ++ bigger
-             
-type Vertex  = [Int]
-type Edge    = (Vertex, Vertex)
-type Graphs  = [Edge] 
-
-
-
-connect :: a -> a -> (a, a)
-connect x1 x2 = (x1,x2)
-
-overlay :: a -> a -> Maybe ([a],[a])
-overlay x1 x2 = Just ([x1],[x2])
-
-showEdges :: (Ord a) => [a] -> [a]  
-showEdges [] = []  
-showEdges (x:xs) =  (x:xs)
-
-showVertices :: (Ord a) => [a] -> [a]  
-showVertices [] = []  
-showVertices (x:xs) =   
-    let smaller = showVertices [a | a <- xs, a < x]  
-        bigger = showVertices [a | a <- xs, a > x]  
-    in  smaller ++ [x] ++ bigger
-    
-    
-    
-      
--- Dot format, get list from previous sections and display as a dot format  
+visualise Empty = error "nothing to visualise"
+visualise (Vertex x) = show x 
  
-graphOpen   = "digragrap " 
-graphClose  = "\n}"
 
-dotEmpty :: String -> String
-dotEmpty x1 = graphOpen ++ x1 ++ " {" ++ "\n" ++ graphClose
+visualiseCluster :: String  -> Graph String Int -> String 
+visualiseCluster x n   = "Diagraph " ++ show x ++ " {" ++ visualise n ++ "\n } "
+							
+							
+-- Approach for Direct Dot Files 
 
---dotDirect :: String -> String 
---dotDirect x1 = 
 
-nodeAtributes :: String -> String -> String
-nodeAtributes x1 x2  = x1 ++ " [" ++ x2 ++ "]"
+dotDirect  :: String -> String
+dotDirect  = show 
+ 
+dotNodes    :: String -> String
+dotNodes    = show
 
-dotEdge :: String -> String -> String
-dotEdge x1 x2 = x1 ++ "->" ++ x2
+dotEdges    ::Show a => (a,a) -> String
+dotEdges  (a,b) = show a ++ "->" ++ show b
+
+{--
+main  = do 
+	line <- getLine
+	line1 <- getLine
+	if null line 
+		then return ()
+		else do putStrLn $ dotDirect line ++ "{" 
+	
+	if null line1 
+		then return ()
+		else do putStrLn ( "node [" ++ dotNodes  line1 ++ "]")
+		
+ --}
+ 
+main  = do 
+	edges <- forM [xs] (\a -> do 
+		putStrLn $ "Node [" ++ show a ++ "]"
+		edge <- getLine
+		return edge)
+	putStrLn " the edges are"	
+	mapM putStrLn edges		
 
