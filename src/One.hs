@@ -59,7 +59,7 @@ visualiseCluster :: String  -> Graph String Int -> String
 visualiseCluster x n   = "Diagraph " ++ show x ++ " {" ++ visualise n ++ "\n } "
 							
 							
--- Approach for Direct Dot Files 
+-- Approach to produce dotfile using manads/IO
 
 
 dotDirect  :: String -> String
@@ -71,7 +71,6 @@ dotNodes    = show
 dotEdges    ::Show a => (a,a) -> String
 dotEdges  (a,b) = show a ++ "->" ++ show b
 
-{--
 main  = do 
 	line <- getLine
 	line1 <- getLine
@@ -83,13 +82,4 @@ main  = do
 		then return ()
 		else do putStrLn ( "node [" ++ dotNodes  line1 ++ "]")
 		
- --}
- 
-main  = do 
-	edges <- forM [xs] (\a -> do 
-		putStrLn $ "Node [" ++ show a ++ "]"
-		edge <- getLine
-		return edge)
-	putStrLn " the edges are"	
-	mapM putStrLn edges		
 
