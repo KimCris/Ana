@@ -38,7 +38,7 @@ dotGraph ::Graph Int -> String
 dotGraph (Empty)     =  " \n " 													
 dotGraph (Vertex x)  = show x 
 dotGraph (Overlay n1 n2 )  =  cluster n1 ++ cluster n2						
-dotGraph (Connect n1 n2 )  = cluster n1 ++ cluster n2							
+dotGraph (Connect n1 n2 )  = cluster n1 ++ cluster n2 ++ "cluster -> cluster"						
 dotGraph (Subgraph n1 )  = cluster n1 
 
 cluster :: Graph Int -> String 
