@@ -34,22 +34,15 @@ instance Num a => Num (Graph a) where
                
 -- Approach to see Graph data in dot Sintax   
 
-dotGraph :: Show a => Graph a -> String
-
-dotGraph (Empty)     =  " \n " 
-													
+dotGraph ::Graph Int -> String
+dotGraph (Empty)     =  " \n " 													
 dotGraph (Vertex x)  = show x 
+dotGraph (Overlay n1 n2 )  =  cluster n1 ++ cluster n2						
+dotGraph (Connect n1 n2 )  = cluster n1 ++ cluster n2							
+dotGraph (Subgraph n1 )  = cluster n1 
 
-dotGraph  (Overlay n1 n2 )  =  dotGraph n1 ++ dotGraph n2
-														
-dotGraph (Connect n1 n2 )  = cluster n1 ++ cluster n2 
-							
-dotGraph  (Subgraph n1 )  = cluster n1 
-
-cluster :: Show a => Graph a -> String 
-cluster n = "Cluster {" ++ show n ++ "\n } "
-
-
+cluster :: Graph Int -> String 
+cluster n = "Cluster {" ++ dotGraph n ++ "\n } "
 
 --Define Visualise 
 
