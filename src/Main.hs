@@ -37,9 +37,18 @@ instance Num a => Num (Graph a) where
 dotGraph ::Graph Int -> String
 dotGraph (Empty)     =  " \n " 													
 dotGraph (Vertex x)  = show x 
-dotGraph (Overlay n1 n2 )  =  cluster n1 ++ cluster n2						
-dotGraph (Connect n1 n2 )  = cluster n1 ++ cluster n2 ++ "cluster -> cluster"						
+dotGraph (Overlay n1 n2 )  =  dotOpen ++ simpleGraph n1 ++ simpleGraph n2 ++ dotClose						
+dotGraph (Connect n1 n2 )  = dotOpen ++ simpleGraph n1 ++ simpleGraph n2 ++ simpleConnect n1 ++ "->" ++ simpleGraph n2 ++ dotClose						
 dotGraph (Subgraph n1 )  = cluster n1 
+
+simpleGraph :: Graph Int -> String 
+simpleGraph n =  dotGraph n ++ ";\n "
+
+simpleConnect :: Graph Int -> String 
+simpleConnect n =  dotGraph n 
+
+cluster :: Graph Int -> String 
+cluster n = "Cluster {" ++ dotGraph n ++ "\n } "
 
 cluster :: Graph Int -> String 
 cluster n = "Cluster {" ++ dotGraph n ++ "\n } "
