@@ -8,6 +8,23 @@ dotGraph
 ,dotSintax
 )where
 
+{- The 'Graph' datatype is a deep embedding of the core graph construction
+primitives 'empty', 'vertex', 'overlay' and 'connect'. We define a 'Num'
+instance as a convenient notation for working with graphs:
+    > 0           == Vertex 0
+    > 1 + 2       == Overlay (Vertex 1) (Vertex 2)
+    > 1 * 2       == Connect (Vertex 1) (Vertex 2)
+    > 1 + 2 * 3   == Overlay (Vertex 1) (Connect (Vertex 2) (Vertex 3))
+    > 1 * (2 + 3) == Connect (Vertex 1) Subgraph ((Overlay (Vertex 2) (Vertex 3)))
+    
+   
+    * 'overlay' has 'empty' as the identity and is idempotent:
+        >   x + empty == x
+        >   empty + x == x
+        >       x + x == x
+ 
+ -}
+
 import qualified Data.Graph as Gr
 import  Data.Char
 import Control.Applicative
