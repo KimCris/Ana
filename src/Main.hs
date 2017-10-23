@@ -51,20 +51,20 @@ instance Num a => Num (Graph a) where
                
 -- Approach to see Graph data in dot Sintax   
 
-dotGraph ::Graph Int -> String
+dotGraph ::Show a => Graph a -> String
 dotGraph (Empty)           =  " \n " 													
 dotGraph (Vertex x)        = show x 
 dotGraph (Overlay n1 n2 )  = simpleGraph n1 ++ simpleGraph n2					
 dotGraph (Connect n1 n2 )  = simpleGraph n1   ++ simpleGraph n1  ++ simpleConnect n1 ++ "->" ++ simpleGraph n2 						
 dotGraph (Subgraph n1 )    = cluster n1 
 
-simpleGraph :: Graph Int -> String 
+simpleGraph :: Show a => Graph a -> String 
 simpleGraph n =  dotGraph n ++ ";\n "
 
-simpleConnect :: Graph Int -> String 
+simpleConnect :: Show a => Graph a -> String 
 simpleConnect n =  dotGraph n 
 
-cluster :: Graph Int -> String 
+cluster :: Show a => Graph a -> String 
 cluster n = "cluster {" ++ dotGraph n ++ "\n } "
 
 
